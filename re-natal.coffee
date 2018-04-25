@@ -69,6 +69,15 @@ interfaceConf   =
     shims:     ["cljsjs.react", "cljsjs.react.dom", "cljsjs.react.dom.server", "cljsjs.create-react-class"]
     sampleCommandNs: '(in-ns \'$PROJECT_NAME_HYPHENATED$.ios.core)'
     sampleCommand: '(dispatch [:set-greeting "Hello Native World!"])'
+  'reagent-no-reframe':
+    cljsDir: "cljs-reagent-no-reframe"
+    sources:
+      common:  ["db.cljs"]
+      other:   [["reagent_dom.cljs","reagent/dom.cljs"], ["reagent_dom_server.cljs","reagent/dom/server.cljs"]]
+    deps:      ['[reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]']
+    shims:     ["cljsjs.react", "cljsjs.react.dom", "cljsjs.react.dom.server", "cljsjs.create-react-class"]
+    sampleCommandNs: '(in-ns \'$PROJECT_NAME_HYPHENATED$.ios.core)'
+    sampleCommand: '(swap! db/app-db-atm assoc :greeting "Hello Native World!")'
   'om-next':
     cljsDir: "cljs-om-next"
     sources:
