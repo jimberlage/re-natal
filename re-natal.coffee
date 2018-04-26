@@ -34,7 +34,7 @@ ipAddressRx     = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/i
 debugHostRx     = /host]\s+\?:\s+@".*";/g
 namespaceRx     = /\(ns\s+([A-Za-z0-9.-]+)/g
 jsRequireRx     = /js\/require "(.+)"/g
-rnVersion       = '0.53.0'
+rnVersion       = '0.55.3'
 rnWinVersion    = '0.53.0-rc.1'
 rnPackagerPort  = 8081
 process.title   = 're-natal'
@@ -74,7 +74,8 @@ interfaceConf   =
     sources:
       common:  ["db.cljs"]
       other:   [["reagent_dom.cljs","reagent/dom.cljs"], ["reagent_dom_server.cljs","reagent/dom/server.cljs"]]
-    deps:      ['[reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]']
+    deps:      ['[org.clojure/core.async "0.4.474"]'
+                '[reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]']
     shims:     ["cljsjs.react", "cljsjs.react.dom", "cljsjs.react.dom.server", "cljsjs.create-react-class"]
     sampleCommandNs: '(in-ns \'$PROJECT_NAME_HYPHENATED$.ios.core)'
     sampleCommand: '(swap! db/app-db-atm assoc :greeting "Hello Native World!")'
