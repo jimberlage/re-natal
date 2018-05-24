@@ -184,7 +184,7 @@ $ react-native run-android
 To run figwheel with real Android device please read [Running on Device](https://facebook.github.io/react-native/docs/running-on-device.html).  
 To make it work on a USB connected device I also had to run:
 ```
-$ adb reverse tcp:8081 tcp:8081
+$ adb reverse tcp:8884 tcp:8884
 $ adb reverse tcp:3449 tcp:3449
 ```
 Then:

@@ -36,7 +36,7 @@ namespaceRx     = /\(ns\s+([A-Za-z0-9.-]+)/g
 jsRequireRx     = /js\/require "(.+)"/g
 rnVersion       = '0.55.3'
 rnWinVersion    = '0.53.0-rc.1'
-rnPackagerPort  = 8081
+rnPackagerPort  = 8884
 process.title   = 're-natal'
 buildProfiles     =
   dev:
