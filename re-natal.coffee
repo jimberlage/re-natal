@@ -36,6 +36,7 @@ namespaceRx     = /\(ns\s+([A-Za-z0-9.-]+)/g
 jsRequireRx     = /js\/require "(.+)"/g
 rnVersion       = '0.57.7'
 rnWinVersion    = '0.57.0-rc.0'
+rnMacVersion    = '0.18.1'
 rnPackagerPort  = 8081
 process.title   = 're-natal'
 buildProfiles     =
@@ -104,6 +105,9 @@ platformMeta     =
     sources:  ["core.cljs"]
   'wpf':
     name:     "WPF"
+    sources:  ["core.cljs"]
+  'macos':
+    name:     "macOS"
     sources:  ["core.cljs"]
 
 log = (s, color = 'green') ->
@@ -514,6 +518,12 @@ generateWpfProject = (projName) ->
   appReactPagePath = "wpf/#{projName}/AppReactPage.cs"
   edit appReactPagePath, [[/public.*JavaScriptMainModuleName.*;/g, "public override string JavaScriptMainModuleName => \"index.wpf\";"]]
 
+generateMacOSProject = (projName) ->
+  log 'Creating React Native macOS project.'
+  exec "node -e \"require('react-native-macos/local-cli/generator/templates').createProjectFromTemplate('.', '#{projName}', 'navigation')\""
+
+  # TODO: Gotta do more here.
+
 updateBabelRc = () ->
   babelRcJson = readConfig('.babelrc')
   babelRcJson.ignore = [
@@ -580,6 +590,9 @@ init = (interfaceName, projName, platforms) ->
     if 'windows' in platforms || 'wpf' in platforms
       pkg.dependencies['react-native-windows'] = rnWinVersion
 
+    if 'macos' in platforms
+      pkg.dependencies['react-native-macos'] = rnMacVersion
+
     fs.writeFileSync 'package.json', JSON.stringify pkg, null, 2
 
     installDeps()
@@ -593,6 +606,9 @@ init = (interfaceName, projName, platforms) ->
 
     if 'wpf' in platforms
       generateWpfProject(projName)
+
+    if 'macos' in platforms
+      generateMacOSProject(projName)
 
     updateGitIgnore(platforms)
 
@@ -664,16 +680,25 @@ addPlatform = (platform) ->
 
       pkg = JSON.parse readFile 'package.json'
 
-      unless 'react-native-windows' in pkg.dependencies
-        pkg.dependencies['react-native-windows'] = rnWinVersion
-        fs.writeFileSync 'package.json', JSON.stringify pkg, null, 2
-        installDeps()
+      if platform is 'windows' || platform is 'wpf'
+        unless 'react-native-windows' in pkg.dependencies
+          pkg.dependencies['react-native-windows'] = rnWinVersion
+          fs.writeFileSync 'package.json', JSON.stringify pkg, null, 2
+          installDeps()
 
-      if platform is 'windows'
-        generateWindowsProject(projName)
+        if platform is 'windows'
+          generateWindowsProject(projName)
 
-      if platform is 'wpf'
-        generateWpfProject(projName)
+        if platform is 'wpf'
+          generateWpfProject(projName)
+
+      if platform is 'macos'
+        unless 'react-native-macos' in pkg.dependencies
+          pkg.dependencies['react-native-macos'] = rnWinVersion
+          fs.writeFileSync 'package.json', JSON.stringify pkg, null, 2
+          installDeps()
+
+        generateMacOSProject(projName)
 
       fs.appendFileSync(".gitignore", "\n\nindex.#{platform}.js\n")
 
@@ -933,6 +958,7 @@ cli.command 'init <name>'
   .option "-i, --interface [#{interfaceNames.join ' '}]", 'specify React interface', defaultInterface
   .option '-u, --uwp', 'create project for UWP app'
   .option '-w, --wpf', 'create project for WPF app'
+  .option '-m, --macos', 'create project for macOS app'
   .action (name, cmd) ->
     if typeof name isnt 'string'
       logErr '''
@@ -947,6 +973,8 @@ cli.command 'init <name>'
       platforms.push 'windows'
     if cmd.wpf?
       platforms.push 'wpf'
+    if cmd.macos?
+      platforms.push 'macos'
     ensureFreePort -> init(cmd.interface, name, platforms)
 
 cli.command 'upgrade'
@@ -955,7 +983,7 @@ cli.command 'upgrade'
   doUpgrade readConfig()
 
 cli.command 'add-platform <platform>'
-  .description 'adds additional app platform: \'windows\' - UWP app, \'wpf\' - WPF app'
+  .description 'adds additional app platform: \'windows\' - UWP app, \'wpf\' - WPF app, \'macos\' - macOS app'
   .action (platform) ->
     addPlatform(platform)
 

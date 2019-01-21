@@ -323,6 +323,18 @@ $ re-natal add-platform wpf
 Note: for projects generated with re-natal version prior to 0.4.0 additional windows builds will not be added automatically to `project.clj`. 
 Workaround is to generate fresh windows project and copy-paste additional builds manually.  
 
+## Support of macOS apps (using [react-native-macos](https://github.com/ptmt/react-native-macos))
+
+To start new project with a macOS app:
+```
+$ re-natal init FutureApp -m
+```
+
+Existing projects can also add the macOS platform any time using commands:
+```
+$ re-natal add-platform macos
+```
+
 ## Production build
 Do this with command:
 ```
