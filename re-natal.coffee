@@ -521,8 +521,11 @@ generateWpfProject = (projName) ->
 generateMacOSProject = (projName) ->
   log 'Creating React Native macOS project.'
   exec "node -e \"require('react-native-macos/local-cli/generator/templates').createProjectFromTemplate('.', '#{projName}', 'navigation')\""
+  fs.unlinkSync 'App.js'
+  fs.unlinkSync 'index.js'
 
-  # TODO: Gotta do more here.
+  appDelegatePath = "ios/#{projName}/AppDelegate.m"
+  edit appDelegatePath, [[/jsBundleURLForBundleRoot:@"index"/g, "jsBundleURLForBundleRoot:@\"index.macos\""]]
 
 updateBabelRc = () ->
   babelRcJson = readConfig('.babelrc')
